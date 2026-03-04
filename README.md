@@ -86,9 +86,8 @@ your local cache. Subsequent runs will be significantly faster.
 1.  Open your web browser and navigate to:
 
 ```{=html}
-<!-- -->
-```
     http://127.0.0.1:8000
+```
 
 2.  Drag and drop a lecture audio file (`.mp3`, `.wav`, or `.m4a`) into
     the upload area.
