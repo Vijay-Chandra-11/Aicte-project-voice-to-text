@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Voice-to-Notes Generator</title>
+    <style>
+        /* Modern Dark Theme */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: #1e293b; padding: 2.5rem; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); width: 100%; max-width: 650px; border: 1px solid #334155; }
+        h1 { color: #38bdf8; text-align: center; margin-bottom: 0.5rem; font-weight: 800; letter-spacing: -0.025em; }
+        p.subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        
+        /* Drag & Drop Upload Button */
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-bottom: 1.5rem; }
+        .btn { border: 2px dashed #475569; color: #cbd5e1; background-color: rgba(15, 23, 42, 0.5); padding: 2rem; border-radius: 12px; font-size: 1.1rem; font-weight: 600; width: 100%; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; }
+        .btn:hover { border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
+        
+        /* Action Button */
+        button[type="submit"] { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #ffffff; border: none; padding: 1rem; border-radius: 12px; width: 100%; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); }
+        button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.5); }
+        
+        /* Output & Loader Status */
+        .loader { display: none; text-align: center; color: #38bdf8; margin-top: 1.5rem; font-weight: 600; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        
+        .output { margin-top: 2rem; background: #0f172a; padding: 1.5rem; border-radius: 12px; border: 1px solid #334155; display: none; }
+        h3 { color: #cbd5e1; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; margin-top: 0; }
+        #transcript { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 2rem; max-height: 150px; overflow-y: auto; }
+        h3.summary-title { color: #38bdf8; border-bottom-color: #0c4a6e; }
+        #summary { color: #f1f5f9; line-height: 1.7; font-size: 1.05rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lecture Voice-to-Notes</h1>
+        <p class="subtitle">Convert spoken lectures into text and generate clear study notes using AI.</p>
+        
+        <form id="uploadForm">
+            <div class="upload-btn-wrapper">
+                <div class="btn" id="fileName">
+                    <span>Drop lecture audio here</span>
+                    <span style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">or click to browse (.mp3, .wav, .m4a)</span>
+                </div>
+                <input type="file" name="file" id="audioFile" accept="audio/*" required />
+            </div>
+            <button type="submit">Generate Smart Notes</button>
+        </form>
+
+        <div class="loader" id="loader">Processing audio... (Whisper & Hugging Face are working)</div>
+
+        <div class="output" id="outputSection">
+            <h3>Raw Transcript:</h3>
+            <div id="transcript"></div>
+            <h3 class="summary-title" style="margin-top: 1.5rem;">AI Generated Notes:</h3>
+            <div id="summary"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update file name on selection
+        document.getElementById('audioFile').addEventListener('change', function(e) {
+            const fileNameDisplay = document.getElementById('fileName');
+            if (e.target.files[0]) {
+                fileNameDisplay.innerHTML = `<span style="color: #38bdf8;">File selected: ${e.target.files[0].name}</span>`;
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileField = document.querySelector('input[type="file"]');
+            const formData = new FormData();
+            formData.append('file', fileField.files[0]);
+
+            // UI states
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('outputSection').style.display = 'none';
+
+            try {
+                const response = await fetch('/generate-notes/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error("Backend error");
+                
+                const result = await response.json();
+                
+                // Populate data
+                document.getElementById('transcript').innerText = result.transcript;
+                document.getElementById('summary').innerText = result.summary;
+                
+                // Show output
+                document.getElementById('outputSection').style.display = 'block';
+            } catch (error) {
+                alert('Error generating notes. Is the Python backend running?');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
