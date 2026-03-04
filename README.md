@@ -1,4 +1,4 @@
-# AI-Powered Study Buddy: Lecture Voice-to-Notes Generator 🎙️📝
+# Lecture Voice-to-Notes Generator 🎙️📝
 
 A full-stack artificial intelligence application designed to seamlessly
 convert spoken lectures into concise, structured study notes. This
