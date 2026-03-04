@@ -83,19 +83,18 @@ your local cache. Subsequent runs will be significantly faster.
 
 ## 💻 Usage
 
-1.  Open your web browser and navigate to:
+1. Navigate to the **Live Demo** or open your local browser:  
+   👉 https://huggingface.co/spaces/Vijay1108/language-to-text  
+   or  
+   👉 http://127.0.0.1:8000
 
-```{=html}
-    http://127.0.0.1:8000
-```
+2. Drag and drop a lecture audio file (`.mp3`, `.wav`, or `.m4a`) into the upload area.
 
-2.  Drag and drop a lecture audio file (`.mp3`, `.wav`, or `.m4a`) into
-    the upload area.
-3.  Click **Generate Smart Notes**.
-4.  Wait for the AI models to process the audio (you can monitor
-    progress in the terminal).
-5.  The **raw transcript** and **AI-generated summary** will
-    automatically appear on the screen.
+3. Click **Generate Smart Notes**.
+
+4. Wait for the AI models to process the audio.
+
+5. The **raw transcript** and **AI-generated summary** will automatically appear on the screen.
 
 ------------------------------------------------------------------------
 
